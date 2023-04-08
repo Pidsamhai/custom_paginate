@@ -133,9 +133,10 @@ class _CustomPaginateState<K, T> extends ConsumerState<CustomPaginate<K, T>> {
             );
       case PageState.ended:
         if (ref.watch(provider).items.isEmpty) {
-          return const Center(
-            child: CustomPaginateNoItem(),
-          );
+          return widget.noItemWidget ??
+              const Center(
+                child: CustomPaginateNoItem(),
+              );
         }
         return null;
       default:

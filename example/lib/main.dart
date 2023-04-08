@@ -56,13 +56,13 @@ class _HomeState extends ConsumerState<Home> {
   late final controller = CustomPaginateController<int, int>(initialPage: 1);
 
   gotoExtra() {
-    // controller.appendLastPage(List.generate(10, (index) => index));
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const ExtraPage(),
-      ),
-    );
+    controller.appendLastPage(List.generate(10, (index) => index));
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => const ExtraPage(),
+    //   ),
+    // );
   }
 
   Future<void> _fetchPage(int page) async {
@@ -71,6 +71,8 @@ class _HomeState extends ConsumerState<Home> {
       List.generate(10, (index) => index + (page * 10)),
       page + 1,
     );
+    await Future.delayed(const Duration(seconds: 2));
+    controller.error = "Error";
   }
 
   @override
@@ -95,6 +97,13 @@ class _HomeState extends ConsumerState<Home> {
         child: RefreshIndicator(
           onRefresh: () => Future(() => controller.refresh()),
           child: CustomPaginate(
+            noItemWidget: Center(
+              child: Text("Custom NoItem"),
+            ),
+            pageErrorWidget: (e) => Center(
+              child: Text("Custom Error"),
+            ),
+            errorWidget: Text("Page Error"),
             controller: controller,
             builder: (context, item) {
               return ListTile(
