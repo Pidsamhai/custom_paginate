@@ -51,7 +51,6 @@ class _CustomPaginateState<K, T> extends ConsumerState<CustomPaginate<K, T>> {
   @override
   void initState() {
     super.initState();
-    widget.controller.provider = provider;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       ref.read(provider).refresh();
     });

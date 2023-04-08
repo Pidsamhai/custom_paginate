@@ -6,16 +6,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 ProviderBase<CustomPaginateController<K, T>> createCustomPaginateProvider<K, T>(
     CustomPaginateController<K, T> controller) {
   final provider = ChangeNotifierProvider.family<CustomPaginateController<K, T>,
-          PageData<K, T>>(((ref, arg) => controller..ref = ref),
+          PageData<K, T>>(((ref, arg) => controller.._ref = ref),
       name: "CustomPaginate<$K, $T>");
-  return provider(PageData<K, T>(nextPage: controller.initialPage));
+  // ignore: no_leading_underscores_for_local_identifiers
+  final _provider = provider(PageData<K, T>(nextPage: controller.initialPage));
+  controller._provider = _provider;
+  return _provider;
 }
 
 class CustomPaginateController<K, T> extends ChangeNotifier {
   CustomPaginateController({required this.initialPage});
-  late final ProviderBase<CustomPaginateController<K, T>> provider;
+  ProviderBase<CustomPaginateController<K, T>>? _provider;
   final K initialPage;
-  late final Ref ref;
+  Ref? _ref;
   late K? _nextPage = initialPage;
   K? get nextPage => _nextPage;
   final List<T> items = [];
@@ -77,9 +80,9 @@ class CustomPaginateController<K, T> extends ChangeNotifier {
 
   @override
   void dispose() {
-    // if (provider != null && ref != null) {
-    ref.invalidate(provider);
-    // }
+    if (_provider != null && _ref != null) {
+      _ref!.invalidate(_provider!);
+    }
   }
 }
 

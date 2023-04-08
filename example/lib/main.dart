@@ -55,8 +55,14 @@ class Home extends ConsumerStatefulWidget {
 class _HomeState extends ConsumerState<Home> {
   late final controller = CustomPaginateController<int, int>(initialPage: 1);
 
-  appendPage() {
-    controller.appendLastPage(List.generate(10, (index) => index));
+  gotoExtra() {
+    // controller.appendLastPage(List.generate(10, (index) => index));
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ExtraPage(),
+      ),
+    );
   }
 
   Future<void> _fetchPage(int page) async {
@@ -99,8 +105,29 @@ class _HomeState extends ConsumerState<Home> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: appendPage,
+        onPressed: gotoExtra,
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class ExtraPage extends StatelessWidget {
+  const ExtraPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Extra Page"),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => Navigator.pop(
+            context,
+          ),
+          child: const Text("back"),
+        ),
       ),
     );
   }
