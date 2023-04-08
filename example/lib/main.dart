@@ -56,7 +56,7 @@ class _HomeState extends ConsumerState<Home> {
   late final controller = CustomPaginateController<int, int>(initialPage: 1);
 
   appendPage() {
-    controller.appendPage(List.generate(10, (index) => index), 2);
+    controller.appendLastPage(List.generate(10, (index) => index));
   }
 
   Future<void> _fetchPage(int page) async {

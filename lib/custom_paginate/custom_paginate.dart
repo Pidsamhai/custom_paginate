@@ -132,9 +132,12 @@ class _CustomPaginateState<K, T> extends ConsumerState<CustomPaginate<K, T>> {
               refresh: ref.read(provider).callNextPage,
             );
       case PageState.ended:
-        return const Center(
-          child: CustomPaginateNoItem(),
-        );
+        if (ref.watch(provider).items.isEmpty) {
+          return const Center(
+            child: CustomPaginateNoItem(),
+          );
+        }
+        return null;
       default:
         return null;
     }
