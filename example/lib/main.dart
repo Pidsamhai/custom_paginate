@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 void main() {
   runApp(
     ProviderScope(
-      child: MyApp(),
       observers: [
         LoggerProvider(),
       ],
+      child: const MyApp(),
     ),
   );
 }
@@ -71,6 +71,12 @@ class _HomeState extends ConsumerState<Home> {
   void initState() {
     super.initState();
     controller.setPageRequestListener(_fetchPage);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override

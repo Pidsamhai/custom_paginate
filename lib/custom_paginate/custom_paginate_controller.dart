@@ -1,18 +1,21 @@
+// ignore_for_file: must_call_super
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 ProviderBase<CustomPaginateController<K, T>> createCustomPaginateProvider<K, T>(
     CustomPaginateController<K, T> controller) {
-  final provider = ChangeNotifierProvider.family
-      .autoDispose<CustomPaginateController<K, T>, PageData<K, T>>(
-          ((ref, arg) => controller),
-          name: "CustomPaginate<$K, $T>");
+  final provider = ChangeNotifierProvider.family<CustomPaginateController<K, T>,
+          PageData<K, T>>(((ref, arg) => controller..ref = ref),
+      name: "CustomPaginate<$K, $T>");
   return provider(PageData<K, T>(nextPage: controller.initialPage));
 }
 
 class CustomPaginateController<K, T> extends ChangeNotifier {
-  CustomPaginateController({required this.initialPage, required});
+  CustomPaginateController({required this.initialPage});
+  late final ProviderBase<CustomPaginateController<K, T>> provider;
   final K initialPage;
+  late final Ref ref;
   late K? _nextPage = initialPage;
   K? get nextPage => _nextPage;
   final List<T> items = [];
@@ -70,6 +73,13 @@ class CustomPaginateController<K, T> extends ChangeNotifier {
     items.clear();
     _nextPage = initialPage;
     callNextPage();
+  }
+
+  @override
+  void dispose() {
+    // if (provider != null && ref != null) {
+    ref.invalidate(provider);
+    // }
   }
 }
 
