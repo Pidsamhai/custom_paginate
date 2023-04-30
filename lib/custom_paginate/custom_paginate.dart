@@ -14,7 +14,7 @@ class CustomPaginate<K, T> extends ConsumerStatefulWidget {
   final Widget loadWidget;
   final Widget Function(VoidCallback refresh)? pageErrorWidget;
   final Widget? errorWidget;
-  final Widget? noItemWidget;
+  final Widget Function(VoidCallback refresh)? noItemWidget;
   final EdgeInsets? padding;
   final IndexedWidgetBuilder? separatorBuilder;
   final CustomPaginateController<K, T> controller;
@@ -126,14 +126,16 @@ class _CustomPaginateState<K, T> extends ConsumerState<CustomPaginate<K, T>> {
       case PageState.loading:
         return widget.loadMoreWidget;
       case PageState.error:
-        return widget.pageErrorWidget?.call(ref.read(provider).callNextPage) ??
-            CustomPaginateError(
-              error: ref.read(provider).error,
-              refresh: ref.read(provider).callNextPage,
-            );
+        return ref.read(provider).items.isNotEmpty
+            ? widget.pageErrorWidget?.call(ref.read(provider).refresh) ??
+                CustomPaginateError(
+                  error: ref.read(provider).error,
+                  refresh: ref.read(provider).callNextPage,
+                )
+            : widget.errorWidget;
       case PageState.ended:
         if (ref.watch(provider).items.isEmpty) {
-          return widget.noItemWidget ??
+          return widget.noItemWidget?.call(ref.read(provider).refresh) ??
               const Center(
                 child: CustomPaginateNoItem(),
               );
