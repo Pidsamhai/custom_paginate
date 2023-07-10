@@ -19,6 +19,8 @@ class CustomPaginate<K, T> extends ConsumerStatefulWidget {
   final IndexedWidgetBuilder? separatorBuilder;
   final CustomPaginateController<K, T> controller;
   final ScrollController? scrollController;
+  final bool reverse;
+  final bool shrinkWrap;
 
   const CustomPaginate({
     super.key,
@@ -34,6 +36,8 @@ class CustomPaginate<K, T> extends ConsumerStatefulWidget {
     this.separatorBuilder,
     required this.controller,
     this.scrollController,
+    this.reverse = false,
+    this.shrinkWrap = false,
   });
 
   @override
@@ -66,13 +70,19 @@ class _CustomPaginateState<K, T> extends ConsumerState<CustomPaginate<K, T>> {
       return CustomScrollView(
         slivers: [
           SliverFillRemaining(
-            child: _buildContentFromState(),
+            child: _buildLoadState(),
           )
         ],
       );
     }
     return Column(
       children: [
+        if (widget.reverse) ...[
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 600),
+            child: _buildLoadState(),
+          ),
+        ],
         Flexible(
           child: NotificationListener<ScrollEndNotification>(
             onNotification: (t) {
@@ -87,6 +97,8 @@ class _CustomPaginateState<K, T> extends ConsumerState<CustomPaginate<K, T>> {
             },
             child: widget.separatorBuilder != null
                 ? ListView.separated(
+                    reverse: widget.reverse,
+                    shrinkWrap: widget.shrinkWrap,
                     keyboardDismissBehavior:
                         ScrollViewKeyboardDismissBehavior.onDrag,
                     physics: const AlwaysScrollableScrollPhysics(),
@@ -100,6 +112,8 @@ class _CustomPaginateState<K, T> extends ConsumerState<CustomPaginate<K, T>> {
                     separatorBuilder: widget.separatorBuilder!,
                   )
                 : ListView.builder(
+                    reverse: widget.reverse,
+                    shrinkWrap: widget.shrinkWrap,
                     keyboardDismissBehavior:
                         ScrollViewKeyboardDismissBehavior.onDrag,
                     physics: const AlwaysScrollableScrollPhysics(),
@@ -113,15 +127,17 @@ class _CustomPaginateState<K, T> extends ConsumerState<CustomPaginate<K, T>> {
                   ),
           ),
         ),
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 600),
-          child: _buildContentFromState(),
-        ),
+        if (!widget.reverse) ...[
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 600),
+            child: _buildLoadState(),
+          ),
+        ],
       ],
     );
   }
 
-  Widget? _buildContentFromState() {
+  Widget? _buildLoadState() {
     switch (ref.watch(provider).state) {
       case PageState.loading:
         return widget.loadMoreWidget;
