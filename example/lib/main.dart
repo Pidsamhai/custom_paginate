@@ -1,5 +1,6 @@
 import 'package:custom_paginate/custom_paginate/custom_paginate.dart';
 import 'package:custom_paginate/custom_paginate/custom_paginate_controller.dart';
+import 'package:custom_paginate_example/debug_page.dart';
 import 'package:custom_paginate_example/logger_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,10 +36,20 @@ class MyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ElevatedButton(
-          onPressed: () => Navigator.push(
-              context, MaterialPageRoute(builder: (_) => Home())),
-          child: Text("home"),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+              onPressed: () => Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => Home())),
+              child: Text("home"),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => DebugPage())),
+              child: Text("debug"),
+            ),
+          ],
         ),
       ),
     );

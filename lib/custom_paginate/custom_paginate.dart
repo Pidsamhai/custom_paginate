@@ -122,7 +122,7 @@ class _CustomPaginateState<K, T> extends ConsumerState<CustomPaginate<K, T>> {
                     itemCount: ref.watch(provider).items.length,
                     itemBuilder: (context, index) => widget.builder(
                       context,
-                      ref.watch(provider).items[index],
+                      ref.read(provider).items[index],
                     ),
                   ),
           ),

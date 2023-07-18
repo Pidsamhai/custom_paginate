@@ -21,7 +21,8 @@ class CustomPaginateController<K, T> extends ChangeNotifier {
   Ref? _ref;
   late K? _nextPage = initialPage;
   K? get nextPage => _nextPage;
-  final List<T> items = [];
+  final List<T> _items = [];
+  List<T> get items => List.unmodifiable(_items);
 
   dynamic _error;
   dynamic get error => _error;
@@ -36,15 +37,75 @@ class CustomPaginateController<K, T> extends ChangeNotifier {
   PageState _state = PageState.init;
   PageState get state => _state;
 
-  appendPage(List<T> data, K? nextPage) {
-    items.addAll(data);
+  void appendPage(List<T> data, K? nextPage) {
+    _items.addAll(data);
     _nextPage = nextPage;
     _state = PageState.loaded;
     notifyListeners();
   }
 
-  appendLastPage(List<T> data) {
-    items.addAll(data);
+  void addAll(List<T> data) {
+    _items.addAll(data);
+    notifyListeners();
+  }
+
+  void add(T data) {
+    _items.add(data);
+    notifyListeners();
+  }
+
+  void remove(T data) {
+    _items.remove(data);
+    notifyListeners();
+  }
+
+  void removeAt(int index) {
+    _items.removeAt(index);
+    notifyListeners();
+  }
+
+  void removeWhere(bool Function(T data) condition) {
+    _items.removeWhere(condition);
+    notifyListeners();
+  }
+
+  void insertLast(T data) {
+    _items.add(data);
+    notifyListeners();
+  }
+
+  void insertFirst(T data) {
+    _items.insert(0, data);
+    notifyListeners();
+  }
+
+  void insertAt(T data, int index) {
+    _items.insert(index, data);
+    notifyListeners();
+  }
+
+  void replaceWhere(T n, bool Function(T data) condition) {
+    _items[_items.indexWhere(condition)] = n;
+    notifyListeners();
+  }
+
+  void replace(T old, T n) {
+    _items[_items.indexOf(old)] = n;
+    notifyListeners();
+  }
+
+  void replaceAt(T n, int index) {
+    _items[index] = n;
+    notifyListeners();
+  }
+
+  void clear() {
+    _items.clear();
+    notifyListeners();
+  }
+
+  void appendLastPage(List<T> data) {
+    _items.addAll(data);
     _nextPage = null;
     _state = PageState.ended;
     notifyListeners();
@@ -73,7 +134,7 @@ class CustomPaginateController<K, T> extends ChangeNotifier {
 
   void refresh() {
     if (state == PageState.loading) return;
-    items.clear();
+    _items.clear();
     _nextPage = initialPage;
     callNextPage();
   }
