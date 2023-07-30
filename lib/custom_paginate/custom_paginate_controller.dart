@@ -99,6 +99,25 @@ class CustomPaginateController<K, T> extends ChangeNotifier {
     notifyListeners();
   }
 
+  void insertFirstOrReplace(T old, T n) {
+    if (_items.contains(old)) {
+      _items[_items.indexOf(old)] = n;
+    } else {
+      insertFirst(n);
+    }
+    notifyListeners();
+  }
+
+  void insertFirstOrReplaceWhere(T n, bool Function(T data) condition) {
+    final index = _items.indexWhere(condition);
+    if (index != -1) {
+      _items[index] = n;
+    } else {
+      insertFirst(n);
+    }
+    notifyListeners();
+  }
+
   void clear() {
     _items.clear();
     notifyListeners();
