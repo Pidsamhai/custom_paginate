@@ -155,7 +155,7 @@ class _CustomPaginateState<K, T> extends ConsumerState<CustomPaginate<K, T>> {
                 : ListView.builder(
                     reverse: widget.reverse,
                     shrinkWrap: widget.shrinkWrap,
-                    physics: const AlwaysScrollableScrollPhysics(),
+                    physics: widget.physics,
                     controller: scrollController,
                     padding: widget.padding,
                     itemCount: ref.watch(provider).items.length,
