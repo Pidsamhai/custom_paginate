@@ -1,5 +1,6 @@
 import 'package:custom_paginate/custom_paginate/custom_paginate_error.dart';
 import 'package:custom_paginate/custom_paginate/custom_paginate_load_more_indicator.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,6 +23,22 @@ class CustomPaginate<K, T> extends ConsumerStatefulWidget {
   final bool reverse;
   final bool shrinkWrap;
 
+  final Axis scrollDirection;
+  final bool? primary;
+  final ScrollPhysics? physics;
+  final double? itemExtent;
+  final Widget? prototypeItem;
+  final ChildIndexGetter? findChildIndexCallback;
+  final bool addAutomaticKeepAlives;
+  final bool addRepaintBoundaries;
+  final bool addSemanticIndexes;
+  final double? cacheExtent;
+  final int? semanticChildCount;
+  final DragStartBehavior dragStartBehavior;
+  final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
+  final String? restorationId;
+  final Clip clipBehavior;
+
   const CustomPaginate({
     super.key,
     required this.builder,
@@ -38,6 +55,21 @@ class CustomPaginate<K, T> extends ConsumerStatefulWidget {
     this.scrollController,
     this.reverse = false,
     this.shrinkWrap = false,
+    this.scrollDirection = Axis.vertical,
+    this.primary,
+    this.physics,
+    this.itemExtent,
+    this.prototypeItem,
+    this.findChildIndexCallback,
+    this.addAutomaticKeepAlives = true,
+    this.addRepaintBoundaries = true,
+    this.addSemanticIndexes = true,
+    this.cacheExtent,
+    this.semanticChildCount,
+    this.dragStartBehavior = DragStartBehavior.start,
+    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.onDrag,
+    this.restorationId,
+    this.clipBehavior = Clip.hardEdge,
   });
 
   @override
@@ -99,9 +131,7 @@ class _CustomPaginateState<K, T> extends ConsumerState<CustomPaginate<K, T>> {
                 ? ListView.separated(
                     reverse: widget.reverse,
                     shrinkWrap: widget.shrinkWrap,
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    physics: const AlwaysScrollableScrollPhysics(),
+                    physics: widget.physics,
                     controller: scrollController,
                     padding: widget.padding,
                     itemCount: ref.watch(provider).items.length,
@@ -110,12 +140,21 @@ class _CustomPaginateState<K, T> extends ConsumerState<CustomPaginate<K, T>> {
                       ref.watch(provider).items[index],
                     ),
                     separatorBuilder: widget.separatorBuilder!,
+                    scrollDirection: widget.scrollDirection,
+                    primary: widget.primary,
+                    findChildIndexCallback: widget.findChildIndexCallback,
+                    addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
+                    addRepaintBoundaries: widget.addRepaintBoundaries,
+                    addSemanticIndexes: widget.addSemanticIndexes,
+                    cacheExtent: widget.cacheExtent,
+                    dragStartBehavior: widget.dragStartBehavior,
+                    keyboardDismissBehavior: widget.keyboardDismissBehavior,
+                    restorationId: widget.restorationId,
+                    clipBehavior: widget.clipBehavior,
                   )
                 : ListView.builder(
                     reverse: widget.reverse,
                     shrinkWrap: widget.shrinkWrap,
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
                     physics: const AlwaysScrollableScrollPhysics(),
                     controller: scrollController,
                     padding: widget.padding,
@@ -124,6 +163,20 @@ class _CustomPaginateState<K, T> extends ConsumerState<CustomPaginate<K, T>> {
                       context,
                       ref.read(provider).items[index],
                     ),
+                    scrollDirection: widget.scrollDirection,
+                    primary: widget.primary,
+                    findChildIndexCallback: widget.findChildIndexCallback,
+                    addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
+                    addRepaintBoundaries: widget.addRepaintBoundaries,
+                    addSemanticIndexes: widget.addSemanticIndexes,
+                    cacheExtent: widget.cacheExtent,
+                    dragStartBehavior: widget.dragStartBehavior,
+                    keyboardDismissBehavior: widget.keyboardDismissBehavior,
+                    restorationId: widget.restorationId,
+                    clipBehavior: widget.clipBehavior,
+                    prototypeItem: widget.prototypeItem,
+                    itemExtent: widget.itemExtent,
+                    semanticChildCount: widget.semanticChildCount,
                   ),
           ),
         ),
